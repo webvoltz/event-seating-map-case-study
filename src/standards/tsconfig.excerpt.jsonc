@@ -1,0 +1,27 @@
+// Excerpt: tsconfig.app.json
+// Strict mode is the floor, not the ceiling. Each flag below turns a class of
+// runtime bug into a compile error.
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,          // rows[i] is Row | undefined, so it gets handled
+    "exactOptionalPropertyTypes": true,        // "missing" and "undefined" are different states
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "noUncheckedSideEffectImports": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Exceptions are written down, never silent:
+    // the standard wants false, but flipping it surfaces conflicts inside
+    // vitest/vite's own bundled declarations, not in this code.
+    "skipLibCheck": true
+  }
+}
