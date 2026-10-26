@@ -153,7 +153,7 @@ Excerpt: [`src/frontend/solver/findBestSeats.ts`](src/frontend/solver/findBestSe
 
 ## 5. Live holds without a server
 
-<p align="center"><img src="assets/screenshots/two-tab-contention.png" alt="Two buyers side by side: buyer A holds seats 37 and 38, buyer B sees them held and is refused the click" width="100%"></p>
+<p align="center"><img src="assets/screenshots/two-buyer-contention.png" alt="Two buyers side by side: buyer A holds seats 37 and 38, buyer B sees them held and is refused the click" width="100%"></p>
 
 The demo has no backend, so buyers coordinate directly over `BroadcastChannel`. The protocol is written as pure reducers in [`holdProtocol.ts`](src/frontend/holds/holdProtocol.ts). The hook that wires it to the channel holds no rules of its own.
 

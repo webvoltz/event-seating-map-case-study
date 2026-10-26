@@ -53,7 +53,7 @@ Pick a party size and a priority. The solver scans every row once and selects th
 
 Selecting a seat claims it for 5 minutes. Every other open venue sees it turn red within milliseconds, and a click on it is refused with a clear message. When a buyer completes a purchase, the seats turn sold everywhere.
 
-<p align="center"><img src="assets/gifs/two-tab-contention.gif" alt="Two buyers side by side: buyer A selects seats, buyer B sees them held and cannot take them" width="100%"></p>
+<p align="center"><img src="assets/gifs/two-buyer-contention.gif" alt="Two buyers side by side: buyer A selects seats, buyer B sees them held and cannot take them" width="100%"></p>
 
 ### Holds that expire on time
 
