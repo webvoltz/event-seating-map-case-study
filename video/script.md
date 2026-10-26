@@ -15,7 +15,7 @@ Narration as read, with what the viewer sees. The machine-readable version with 
 | Standards | Every commit is scanned for secrets, linted, type-checked and built before it lands. | CI pipeline |
 | Close | Webvoltz builds the technology systems businesses run on. If your platform sells seats, slots or stock in real time, book a strategy call. | End card |
 
-**Word count:** about 410. **Running time:** about 3 minutes at a calm pace.
+**Word count:** about 410. **Running time:** 2 minutes 18 seconds.
 
 ## Voice checklist
 

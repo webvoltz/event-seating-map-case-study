@@ -1,6 +1,6 @@
 # Walkthrough video: storyboard
 
-**Format:** 1920 × 1080, 30 fps, about 3 minutes
+**Format:** 1920 × 1080, 30 fps, 2 minutes 18 seconds
 **Narrator:** synthetic female voice (`cb-heart`), calm and direct
 **Script:** [`script.vo.md`](script.vo.md). Every scene starts on its script section, so picture and voice stay in sync.
 
@@ -29,7 +29,7 @@
 | 5 | solver | Party size 4, best view, then best price | `best-seats-finder` recording | "One pass. Same answer every time." |
 | 6 | contention | Two browser windows side by side. Seats turn red on "held". Toast on B. | `two-tab-contention` recording | "Lower session ID wins" |
 | 7 | expiry | Time-lapse: holds drop away, countdown goes amber, cart clears | `hold-expiry-timelapse` recording, "time-lapse" tag | "One timer. Zero idle re-renders." |
-| 8 | backend | Architecture builds lane by lane. "Redis holds the seat" highlights Redis, "Postgres owns it" highlights Postgres. | `backend-arch` diagram | |
+| 8 | backend | Opening title "Two buyers. Two machines. One referee." Then Redis and Postgres cards arrive on their names, with the hold script below. | Native cards, Lua excerpt | |
 | 9 | backend | Three layers stack one by one on "three checks" | `checkout-seq` diagram, Lua and SQL excerpts | "A second sale can't commit." |
 | 10 | risks | Risk table rows reveal, the limits row stays highlighted | Risks table from README | |
 | 11 | standards | CI pipeline lights up left to right | `ci` diagram | |

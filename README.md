@@ -191,9 +191,11 @@ Known limits are listed openly in [Security and performance](SECURITY-AND-PERFOR
 
 ## Walkthrough video
 
-A 3-minute walkthrough of the build, the risks and how each part was engineered. Script and storyboard are in [`video/`](video).
+A 2-minute walkthrough of the build, the risks and how each part was engineered. Script and storyboard are in [`video/`](video).
 
-<!-- The rendered video is attached to the repository release. -->
+<p align="center"><a href="video/walkthrough.mp4"><img src="video/thumbnail.png" alt="Play the walkthrough video: 15,000 seats, one live map" width="100%"></a></p>
+
+<p align="center"><a href="video/walkthrough.mp4">Watch the walkthrough (2:18, 1080p)</a></p>
 
 ---
 

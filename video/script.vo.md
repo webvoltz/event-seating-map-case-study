@@ -51,7 +51,7 @@ fps: 30
 [narration] The same request key returns the same order.
 [narration] The cart must still own every seat.
 [narration] And the database allows one ticket per seat. A second sale can't commit.
-[narration] Every change carries a sequence number. Miss one, and the map resyncs.
+[narration] Every change carries a sequence number. Miss one, and the map {resyncs|re-syncs}.
 
 # risks
 [narration] We wrote down the risks, and the limits.
@@ -62,5 +62,5 @@ fps: 30
 [narration] Every commit is scanned for secrets, linted, type-checked and built before it lands.
 
 # close
-[narration] Webvoltz builds the technology systems businesses run on.
+[narration] {Webvoltz|Web voltz} builds the technology systems businesses run on.
 [narration] If your platform sells seats, slots or stock in real time, *book a strategy call*.
