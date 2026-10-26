@@ -18,7 +18,7 @@
 We built a ticketing seat map that lets buyers pick exact seats in a 15,000-seat venue, stays responsive on every click, and never shows two people the same seat as theirs.
 
 - **Fast at full scale.** Only the section a buyer opens is live. The browser handles 1,500 interactive seats at a time, not 15,000.
-- **Fair under contention.** Seat holds expire on time, open tabs share holds live, and a same-instant clash resolves the same way everywhere.
+- **Fair under contention.** Seat holds expire on time, every buyer sees other buyers' holds live, and a same-instant clash resolves the same way everywhere.
 - **Ready for a real backend.** We include the production design: Redis for holds, Postgres as the final word on every sale, live updates over WebSocket.
 
 > This repository is a technical case study. It shows how we structure, write and ship this kind of system through selected excerpts, diagrams and recordings. The full source is not published. See [Notice](#notice).
@@ -30,8 +30,8 @@ We built a ticketing seat map that lets buyers pick exact seats in a 15,000-seat
 A venue map has to show every seat as something a buyer can see, focus, select and buy. Three things make that hard:
 
 1. **Scale.** 10 sections × 30 rows × 50 seats is 15,000 elements. Drawn naively, every pan, zoom and click asks the browser to diff, lay out and paint all of them.
-2. **Contention.** Two buyers, or two tabs, reach for the same seat. Holds must expire on time, and a clash must resolve the same way for everyone.
-3. **Trust.** A buyer who sees a seat as theirs must be able to buy it. A seat must never be sold twice, even when the network, a tab or a server misbehaves.
+2. **Contention.** Two buyers reach for the same seat. Holds must expire on time, and a clash must resolve the same way for everyone.
+3. **Trust.** A buyer who sees a seat as theirs must be able to buy it. A seat must never be sold twice, even when the network, a buyer's browser or a server misbehaves.
 
 ---
 
@@ -49,11 +49,11 @@ Pick a party size and a priority. The solver scans every row once and selects th
 
 <p align="center"><img src="assets/gifs/best-seats-finder.gif" alt="Finding the best 4 seats by view, then by price" width="100%"></p>
 
-### Live seat holds across tabs
+### Live seat holds across devices
 
-Selecting a seat claims it for 5 minutes. Every other open tab sees it turn red within milliseconds, and a click on it is refused with a clear message. When a buyer completes a purchase, the seats turn sold everywhere.
+Selecting a seat claims it for 5 minutes. Every other open venue sees it turn red within milliseconds, and a click on it is refused with a clear message. When a buyer completes a purchase, the seats turn sold everywhere.
 
-<p align="center"><img src="assets/gifs/two-tab-contention.gif" alt="Two browser tabs side by side: tab A selects seats, tab B sees them held and cannot take them" width="100%"></p>
+<p align="center"><img src="assets/gifs/two-tab-contention.gif" alt="Two buyers side by side: buyer A selects seats, buyer B sees them held and cannot take them" width="100%"></p>
 
 ### Holds that expire on time
 
@@ -98,7 +98,7 @@ Every figure above comes from the production build or the test run. The method i
 | Re-renders | `React.memo` on sections and seats. Components subscribe to booleans like `zoom >= 2`, not raw numbers. | A wheel event re-renders 1,500 seats only when the label threshold is actually crossed. |
 | State | One Zustand store. `Set` in memory, arrays in `localStorage` through a typed adapter. | O(1) selection checks, and persistence that survives old or malformed data. |
 | Seat status | One pure resolver with a fixed order: sold, held, selected, reserved, available. | One place decides what a seat shows. Every case is unit-tested. |
-| Holds | A pure protocol over `BroadcastChannel`: join handshake, full-set messages, lower-session-id wins. | Tabs agree without a coordinator, and a lost message heals on the next one. |
+| Holds | A pure protocol over `BroadcastChannel`: join handshake, full-set messages, lower-session-id wins. | Buyers agree without a coordinator, and a lost message heals on the next one. |
 | Timers | One `setTimeout` for the next deadline. A no-op tick returns the same `Map`. | Zero re-renders when nothing expired, locked in by a reference-equality test. |
 
 The full write-up, with excerpts, is in **[ARCHITECTURE.md](ARCHITECTURE.md)**.
@@ -107,7 +107,7 @@ The full write-up, with excerpts, is in **[ARCHITECTURE.md](ARCHITECTURE.md)**.
 
 ## The production backend
 
-The demo resolves contention between tabs of one browser. A live on-sale needs a server to arbitrate between thousands of buyers. We designed that backend and include its core as reference code in [`src/backend`](src/backend).
+The demo resolves contention between buyers without a server. A live on-sale needs a server to arbitrate between thousands of buyers. We designed that backend and include its core as reference code in [`src/backend`](src/backend).
 
 <p align="center"><img src="assets/diagrams/checkout-seq.png" alt="Sequence from hold to paid with three layers of protection: idempotency key, hold ownership, primary key on tickets" width="100%"></p>
 
@@ -135,11 +135,11 @@ The demo resolves contention between tabs of one browser. A live on-sale needs a
 | Risk | What could go wrong | How we handled it |
 | --- | --- | --- |
 | Render cost at 15,000 seats | Pan and zoom stutter, clicks lag | Section-level collapsing, memo boundaries, boolean selectors. 66 nodes on the overview. |
-| Two tabs take the same seat | Both buyers think they have it | Full-set hold messages plus a deterministic tie-break. The loser is told at once. |
-| Timer drift and sleeping tabs | Holds outlive their deadline | One timer for the next deadline, a catch-up on `visibilitychange`, clock-skew correction on messages. |
+| Two buyers take the same seat | Both buyers think they have it | Full-set hold messages plus a deterministic tie-break. The loser is told at once. |
+| Timer drift and sleeping devices | Holds outlive their deadline | One timer for the next deadline, a catch-up on `visibilitychange`, clock-skew correction on messages. |
 | Refresh to reset the clock | A buyer extends a hold by reloading | The deadline is persisted and anchored to when the cart opened. |
 | Payment after expiry | A purchase completes on a lapsed hold | The deadline is re-checked inside the same synchronous update that completes the purchase. |
-| Untrusted messages | A malformed or old-version tab corrupts state | Every message passes a type guard. The channel name is versioned. |
+| Untrusted messages | A malformed message or an outdated app version corrupts state | Every message passes a type guard. The channel name is versioned. |
 | Double sale in production | Redis failover drops a hold, two buyers pay | Postgres primary key on tickets is the final arbiter. Checkout is idempotent. |
 | On-sale traffic spike | Origin overload, bots hoarding seats | Snapshot cached at the edge, deltas batched per 100 ms, waiting room, rate limits per cart, IP and customer. |
 

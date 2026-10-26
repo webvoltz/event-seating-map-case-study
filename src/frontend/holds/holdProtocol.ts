@@ -1,12 +1,12 @@
 // Excerpt: src/utils/holdProtocol.ts
-// The cross-tab hold protocol as pure functions. No timers, no I/O,
+// The hold protocol between buyers as pure functions. No timers, no I/O,
 // so every rule here is unit-tested directly.
 
 import type { HoldMap, HoldMessage, SeatHold, WireHold } from '../interfaces/venue.interfaces';
 
 export const SELECTION_HOLD_MS = 5 * 60_000;
 export const CLOCK_SKEW_TOLERANCE_MS = 2_000;
-// Versioned so a protocol change can't cross-talk with an old, unreloaded tab.
+// Versioned so a protocol change can't cross-talk with a buyer still on an old version.
 export const HOLD_CHANNEL_NAME = 'venue-holds-v1';
 
 // Every inbound message is untrusted until it passes this guard.
@@ -32,8 +32,8 @@ export function isHoldMessage(data: unknown): data is HoldMessage {
   }
 }
 
-// Tabs share one machine clock, so skew is usually zero. When it isn't
-// (a sleeping laptop, a throttled tab), shift the expiry instead of trusting it.
+// Demo buyers share one machine clock, so skew is usually zero. When it isn't
+// (a sleeping laptop, a throttled page), shift the expiry instead of trusting it.
 export function translateExpiry(expiresAt: number, sentAt: number, receivedAt: number): number {
   const skew = receivedAt - sentAt;
   if (Math.abs(skew) <= CLOCK_SKEW_TOLERANCE_MS) return expiresAt;
@@ -61,8 +61,8 @@ export interface PeerHoldResult {
 // A 'hold' message carries the sender's ENTIRE current claim. It replaces
 // whatever we had for that sender, so a dropped message heals on the next one.
 //
-// Two tabs claiming the same seat at the same instant: the lower session id
-// wins. Every tab applies the same rule to the same inputs, so they all agree
+// Two buyers claiming the same seat at the same instant: the lower session id
+// wins. Every buyer's app applies the same rule to the same inputs, so they all agree
 // without a coordinator.
 export function ingestPeerHold(
   holds: HoldMap,
@@ -86,7 +86,7 @@ export function ingestPeerHold(
         next.set(seatId, { seatId, owner: message.from, expiresAt: message.expiresAt });
         lostSeatIds.push(seatId); // we lose: release it and tell the user
       } else {
-        mustRepost = true; // we win: re-announce so the other tab backs off
+        mustRepost = true; // we win: re-announce so the other buyer backs off
       }
     } else {
       next.set(seatId, { seatId, owner: message.from, expiresAt: message.expiresAt });
@@ -96,8 +96,8 @@ export function ingestPeerHold(
   return { holds: next, lostSeatIds, mustRepost };
 }
 
-// A join-time 'state' snapshot is authoritative: a tab that opens late
-// adopts what existing tabs already hold, with no tie-break.
+// A join-time 'state' snapshot is authoritative: a buyer who arrives late
+// adopts what existing buyers already hold, with no tie-break.
 export function adoptRemoteState(
   selectedSeats: ReadonlySet<string>,
   mySessionId: string,

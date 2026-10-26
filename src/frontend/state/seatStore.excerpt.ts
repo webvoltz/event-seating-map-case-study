@@ -112,7 +112,7 @@ export const useVenueStore = create<VenueState>()(
     {
       name: 'venue-storage',
       storage: venueStorage,
-      // Holds are live shared state owned by the cross-tab protocol.
+      // Holds are live shared state owned by the hold protocol.
       // Persisting them too would give two sources of truth.
       partialize: (s) => ({
         selectedSeats: s.selectedSeats,

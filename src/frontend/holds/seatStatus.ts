@@ -20,7 +20,7 @@ export function resolveSeatStatus(
   if (seat.status === 'sold' || soldSeats.has(seat.id)) return 'sold';
 
   // Checked before `selected`: after a reload, a persisted selection that another
-  // tab already claimed must not render as "mine" before reconciliation runs.
+  // buyer already claimed must not render as "mine" before reconciliation runs.
   const hold = holds.get(seat.id);
   if (hold && hold.expiresAt > now) return 'held';
 

@@ -27,7 +27,7 @@ export function useHoldExpiry(): void {
     scheduleNext();
     const unsubscribe = useVenueStore.subscribe(scheduleNext);
 
-    // Browsers throttle timers in background tabs. Catch up the moment the tab is visible.
+    // Browsers throttle timers on background pages. Catch up the moment the page is visible.
     const handleVisibility = () => {
       if (document.visibilityState === 'visible') {
         useVenueStore.getState().runExpiry(Date.now());

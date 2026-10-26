@@ -32,7 +32,7 @@ describe('ingestPeerHold', () => {
 });
 
 describe('isHoldMessage', () => {
-  // Messages from other tabs are untrusted input. Malformed shapes are dropped.
+  // Messages from other buyers are untrusted input. Malformed shapes are dropped.
   it.each([
     null,
     { type: 'bogus', from: 'a', sentAt: 1 },
@@ -46,12 +46,12 @@ describe('isHoldMessage', () => {
 // @vitest-environment node
 // jsdom has no BroadcastChannel; Node does. This file proves delivery over the
 // real transport, not only the in-memory fake the other tests use.
-it('a hold posted by one tab is received by another, live', async () => {
+it('a hold posted by one buyer is received by another, live', async () => {
   const receivedByB: HoldMessage[] = [];
-  const tabB = createHoldChannel('tab-b', (msg) => receivedByB.push(msg));
-  const tabA = createHoldChannel('tab-a', () => undefined);
+  const buyerB = createHoldChannel('buyer-b', (msg) => receivedByB.push(msg));
+  const buyerA = createHoldChannel('buyer-a', () => undefined);
 
-  tabA.post({ type: 'hold', from: 'tab-a', sentAt: Date.now(), seatIds: ['SEAT-1'], expiresAt });
+  buyerA.post({ type: 'hold', from: 'buyer-a', sentAt: Date.now(), seatIds: ['SEAT-1'], expiresAt });
   await new Promise((r) => setTimeout(r, 20));
 
   expect(receivedByB).toHaveLength(1);

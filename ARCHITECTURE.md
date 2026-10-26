@@ -28,7 +28,7 @@ This document covers how the seat map is built and how we would run it in produc
 
 ## System at a glance
 
-<p align="center"><img src="assets/diagrams/frontend-arch.png" alt="Frontend architecture: view components, a single Zustand store, pure rule modules, and hooks for expiry and cross-tab sync" width="100%"></p>
+<p align="center"><img src="assets/diagrams/frontend-arch.png" alt="Frontend architecture: view components, a single Zustand store, pure rule modules, and hooks for expiry and live sync between buyers" width="100%"></p>
 
 Three rules shape the frontend:
 
@@ -101,7 +101,7 @@ getItem: (name) => {
 | `selectedSeats` | Yes | Survive a refresh |
 | `selectionExpiresAt` | Yes | A reload must not grant a fresh 5 minutes |
 | `soldSeats`, `bookings` | Yes | History on the same device |
-| `holds` | No | Live shared state owned by the cross-tab protocol. Persisting it would create two sources of truth. |
+| `holds` | No | Live shared state owned by the hold protocol. Persisting it would create two sources of truth. |
 | `zoom`, `pan`, `activeSection` | No | View state, not buyer intent |
 
 **Atomic transitions.** "Best seats" selects the block, opens its section and sets the camera in one `set()` call. There is never a frame where seats are selected but their section isn't mounted.
@@ -124,7 +124,7 @@ if (seat.status === 'reserved') return 'reserved';
 return 'available';
 ```
 
-`held` comes before `selected`. After a reload, a persisted selection that another tab already claimed must not show as "mine" during the moment before the protocol reconciles.
+`held` comes before `selected`. After a reload, a persisted selection that another buyer already claimed must not show as "mine" during the moment before the protocol reconciles.
 
 ---
 
@@ -145,7 +145,7 @@ The last two keys exist only to break ties. (section, row, first seat) is unique
 
 **Centring in column space.** Rows are arcs. Column number maps linearly onto arc angle, so "how centred in the row" is measured in columns, not in x/y pixels, which would favour seats near the arc's bulge.
 
-**Live availability is injected.** The solver takes an `isSelectable(seat)` function built from venue status, seats sold this session and live holds from other tabs. It never suggests a seat someone else is holding.
+**Live availability is injected.** The solver takes an `isSelectable(seat)` function built from venue status, seats sold this session and live holds from other buyers. It never suggests a seat someone else is holding.
 
 Excerpt: [`src/frontend/solver/findBestSeats.ts`](src/frontend/solver/findBestSeats.ts)
 
@@ -153,23 +153,23 @@ Excerpt: [`src/frontend/solver/findBestSeats.ts`](src/frontend/solver/findBestSe
 
 ## 5. Live holds without a server
 
-<p align="center"><img src="assets/screenshots/two-tab-contention.png" alt="Two tabs side by side: tab A holds seats 37 and 38, tab B shows them held and refuses the click" width="100%"></p>
+<p align="center"><img src="assets/screenshots/two-tab-contention.png" alt="Two buyers side by side: buyer A holds seats 37 and 38, buyer B sees them held and is refused the click" width="100%"></p>
 
-The demo has no backend, so tabs of the same browser coordinate over `BroadcastChannel`. The protocol is written as pure reducers in [`holdProtocol.ts`](src/frontend/holds/holdProtocol.ts). The hook that wires it to the channel holds no rules of its own.
+The demo has no backend, so buyers coordinate directly over `BroadcastChannel`. The protocol is written as pure reducers in [`holdProtocol.ts`](src/frontend/holds/holdProtocol.ts). The hook that wires it to the channel holds no rules of its own.
 
-<p align="center"><img src="assets/diagrams/hold-protocol.png" alt="Sequence diagram of the cross-tab hold protocol: join handshake, claim, same-instant tie-break, purchase and leave" width="100%"></p>
+<p align="center"><img src="assets/diagrams/hold-protocol.png" alt="Sequence diagram of the hold protocol between two buyers: join handshake, claim, same-instant tie-break, purchase and leave" width="100%"></p>
 
 **The rules**
 
 | Rule | What it prevents |
 | --- | --- |
-| A late tab sends `hello` and adopts the `state` reply as authoritative | A new tab offering seats that are already held |
-| No reply in 250 ms → seed locally | A single tab waiting forever. The no-channel path is the same code the tests run. |
+| A buyer who arrives late sends `hello` and adopts the `state` reply as authoritative | A newly arrived buyer being offered seats that are already held |
+| No reply in 250 ms → seed locally | A lone buyer waiting forever. The no-channel path is the same code the tests run. |
 | Every `hold` carries the sender's full set, which replaces the old one | A dropped message leaving a stale hold. The next message heals it. |
-| Same seat, same instant → lower session id wins | Two tabs both believing they won. Each tab applies the same rule to the same inputs and agrees. |
-| Clock skew over 2 s shifts the received expiry | A throttled or sleeping tab misreading deadlines |
-| Messages pass `isHoldMessage` before use; channel is `venue-holds-v1` | Malformed data, or an old tab speaking an older protocol |
-| `goodbye` on `pagehide` | Holds outliving a closed tab |
+| Same seat, same instant → lower session id wins | Two buyers both believing they won. Each buyer's app applies the same rule to the same inputs and agrees. |
+| Clock skew over 2 s shifts the received expiry | A buyer on a throttled or sleeping device misreading deadlines |
+| Messages pass `isHoldMessage` before use; channel is `venue-holds-v1` | Malformed data, or a buyer on an old app version speaking an older protocol |
+| `goodbye` on `pagehide` | Holds outliving a buyer who has left |
 
 **One timer, zero idle re-renders.** `useHoldExpiry` arms a single `setTimeout` for the next deadline across all holds and the buyer's own cart. When it fires, `pruneHolds` returns the same `Map` reference if nothing lapsed, and the store skips its update entirely.
 
@@ -181,7 +181,7 @@ export function pruneHolds(holds: HoldMap, now: number): HoldMap { /* ... */ }
 
 The countdown on screen runs its own render loop and never writes to the store, so it can't re-render the seat layer either.
 
-**What this is honest about.** `BroadcastChannel` only reaches tabs of one browser on one machine. The lower-id tie-break is a deterministic convenience, not consensus. Two buyers on two computers need a server to arbitrate, which is Part 2.
+**What this is honest about.** `BroadcastChannel` needs no server, so the demo simulates its buyers in one browser. The lower-id tie-break is a deterministic convenience, not consensus. Buyers on separate devices need a server to arbitrate, which is Part 2.
 
 ---
 

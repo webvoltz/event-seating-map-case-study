@@ -66,14 +66,14 @@ These are the rules we hold the codebase to. Each one has a test or a lint rule 
 
 ## Security in the shipped frontend
 
-The demo has no server, no accounts and no secrets. Its attack surface is what other tabs and stored data can feed it.
+The demo has no server, no accounts and no secrets. Its attack surface is what other buyers' messages and stored data can feed it.
 
 | Concern | Control |
 | --- | --- |
-| Malformed or hostile cross-tab messages | Every message passes `isHoldMessage`, a full structural type guard, before any field is read. Unknown types are dropped. |
-| Protocol drift between app versions | The channel is named `venue-holds-v1`. A changed protocol gets a new name, so old tabs can't cross-talk. |
+| Malformed or hostile messages from other buyers | Every message passes `isHoldMessage`, a full structural type guard, before any field is read. Unknown types are dropped. |
+| Protocol drift between app versions | The channel is named `venue-holds-v1`. A changed protocol gets a new name, so buyers on an old version can't cross-talk. |
 | Corrupt or old `localStorage` | The storage adapter validates shape and falls back to empty. Optional fields tolerate older versions. |
-| Clock games from a throttled tab | Expiry in messages is shifted by measured skew beyond a 2-second tolerance |
+| Clock games from a throttled or sleeping device | Expiry in messages is shifted by measured skew beyond a 2-second tolerance |
 | Extending a hold by reloading | The deadline is persisted and anchored to when the cart opened |
 | Paying on a lapsed hold | The deadline is re-checked inside the same synchronous update that completes the booking |
 | Secrets in code | None needed. Gitleaks scans every commit and the full history in CI. |
@@ -167,8 +167,8 @@ We list these because a buyer's engineer will find them anyway.
 
 | Limit | Detail | What closes it |
 | --- | --- | --- |
-| Same-browser contention only | The demo's live holds reach tabs of one browser. Two machines can't see each other. | The production design in Part 2 |
-| Tie-break is not consensus | Lower session id wins between tabs. A convenience, not arbitration. | Server-side atomic holds |
+| Demo buyers share one browser | The demo simulates its buyers in one browser, with no server. Buyers on separate devices need a server to see each other. | The production design in Part 2 |
+| Tie-break is not consensus | Lower session id wins between buyers. A convenience, not arbitration. | Server-side atomic holds |
 | Payment is a stub | Checkout confirms in the UI. No provider is integrated. | The checkout and webhook design in `src/backend/checkout` |
 | Very large single sections | Above about 5,000 seats in one section, the open section would need row virtualization | Row-level windowing inside `Seats` |
 | Component test coverage | Pure logic modules are close to fully covered. Several view components have no tests yet. Project-wide: 55.6% statements, 56.2% branches. | Component suites for the map, panels and toasts. Coverage thresholds only move up. |
