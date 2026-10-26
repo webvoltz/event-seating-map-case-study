@@ -1,7 +1,8 @@
 # Walkthrough video: storyboard
 
-**Format:** 1920 × 1080, 30 fps, 2 minutes 18 seconds
+**Format:** 1920 × 1080, 30 fps, 52 seconds
 **Narrator:** synthetic female voice (`cb-heart`), calm and direct
+**Audience:** business leads, not engineers. One message: we build systems that stay fast and fair as they scale.
 **Script:** [`script.vo.md`](script.vo.md). Every scene starts on its script section, so picture and voice stay in sync.
 
 ## Look
@@ -9,38 +10,32 @@
 | Element | Rule |
 | --- | --- |
 | Background | `#111111`, dot pattern at 40% opacity so captions stay legible |
-| Logo | Symbol + wordmark lockup, top left, 1.5× clear space. Never the wordmark alone. |
+| Logo | Symbol + wordmark lockup, top left. Never the wordmark alone. |
 | Headings | Plus Jakarta Sans, Extra Bold, sentence case, closing period in `#FFC107` |
 | Body and captions | Inter. Captions word by word, emphasis in `#FFC107`. |
-| Accent | `#FFC107` only for the period, the chapter eyebrow, the progress bar and emphasis. Never a fill behind long text. |
-| Status colours | Green, red, amber only where the product itself shows seat status |
-| Footage | Real screen recordings from the running app. A visible cursor with natural paths, small overshoot and click rings. No stock footage, no generated imagery. |
-| Motion | Calm, physical springs. Cuts land on section starts. No flashy transitions. |
+| Accent | `#FFC107` only for the period, the chapter label, small markers and the call to action |
+| Footage | Real screen recordings from the running app, with a visible cursor that moves naturally |
+| Motion | Calm springs. Cuts land on section starts. |
 | Safe area | 8% margin on all sides |
 
 ## Scenes
 
-| # | Section | On screen | Footage / asset | Lower third |
-| --- | --- | --- | --- | --- |
-| 1 | hook | Cover card: eyebrow "Case study", title "15,000 seats. One live map." | Hero layout, dot pattern | |
-| 2 | problem | Dense grid of 15,000 dots that flickers on each beat, then two cursors reaching for one seat | Animated grid, two cursors | "Speed and fairness are one problem." |
-| 3 | render | Ring of 10 sections. Lands on "ten shapes", then one section opens into seats | `render-strategy` diagram build, `section-drill-in` recording | "66 nodes on the overview" |
-| 4 | render | Keyboard moving across seats with key badges | `keyboard-navigation` recording | "Every seat is a real checkbox" |
-| 5 | solver | Party size 4, best view, then best price | `best-seats-finder` recording | "One pass. Same answer every time." |
-| 6 | contention | Two browser windows side by side. Seats turn red on "held". Toast on B. | `two-tab-contention` recording | "Lower session ID wins" |
-| 7 | expiry | Time-lapse: holds drop away, countdown goes amber, cart clears | `hold-expiry-timelapse` recording, "time-lapse" tag | "One timer. Zero idle re-renders." |
-| 8 | backend | Opening title "Two buyers. Two machines. One referee." Then Redis and Postgres cards arrive on their names, with the hold script below. | Native cards, Lua excerpt | |
-| 9 | backend | Three layers stack one by one on "three checks" | `checkout-seq` diagram, Lua and SQL excerpts | "A second sale can't commit." |
-| 10 | risks | Risk table rows reveal, the limits row stays highlighted | Risks table from README | |
-| 11 | standards | CI pipeline lights up left to right | `ci` diagram | |
-| 12 | close | End card: lockup centred, "Book a strategy call" pill in `#FFC107` with `#111111` text | End card | |
+| # | Section | On screen | Footage / asset |
+| --- | --- | --- | --- |
+| 1 | hook | "Selling tickets online sounds simple." then "15,000 seats. On sale at once." | Title card with the live map |
+| 2 | problem | A field of seats. Two cursors arrive from either side, both pointing at the same highlighted seat. Labels: "Stay fast at 15,000 seats", "One seat, one buyer". | Animated grid |
+| 3 | speed | The venue as 10 sections. One lights up, then the real app opens that section. Label: "1 section loads at a time". | Section drill-in recording |
+| 4 | solver | The app finds the best 4 seats together | Best seats finder recording |
+| 5 | contention | User A and User B side by side. B's seats turn red as A picks them. Label: "No double bookings". | Two-buyer recording |
+| 6 | expiry | Holds release, the timer runs out, seats go back on sale. Tagged "Time-lapse". | Time-lapse recording |
+| 7 | scale | Buyers stream in. On "grows", more servers join. "One record per seat" on the right. | Animated diagram |
+| 8 | close | Logo, "Webvoltz builds the technology systems businesses run on.", "Book a strategy call", webvoltz.com | End card |
 
 ## Audio
 
-- Voice levelled to −18 LUFS per line, final mix normalised to −14 LUFS.
-- No music bed in v1. If one is added later, it ducks under the voice.
+- Voice levelled per line, final mix normalised to −14 LUFS.
+- No music bed.
 
-## Honesty notes on screen
+## Previous version
 
-- The time-lapse carries a small "time-lapse · 5 min in 20 s" tag.
-- Backend scenes carry a "Production design" eyebrow, so viewers don't read them as part of the demo.
+The longer technical cut (2:18) is kept under the git tag `v1-technical`.

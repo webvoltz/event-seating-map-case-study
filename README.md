@@ -191,11 +191,11 @@ Known limits are listed openly in [Security and performance](SECURITY-AND-PERFOR
 
 ## Walkthrough video
 
-A 2-minute walkthrough of the build, the risks and how each part was engineered. Script and storyboard are in [`video/`](video).
+A 52-second overview in plain language: what the map does, how it stays fair when two buyers want the same seat, and how it is built to scale. Script and storyboard are in [`video/`](video).
 
-<p align="center"><a href="video/walkthrough.mp4"><img src="video/thumbnail.png" alt="Play the walkthrough video: 15,000 seats, one live map" width="100%"></a></p>
+<p align="center"><a href="video/walkthrough.mp4"><img src="video/thumbnail.png" alt="Play the walkthrough video: 15,000 seats on sale at once" width="100%"></a></p>
 
-<p align="center"><a href="video/walkthrough.mp4">Watch the walkthrough (2:18, 1080p)</a></p>
+<p align="center"><a href="video/walkthrough.mp4">Watch the walkthrough (0:52, 1080p)</a></p>
 
 ---
 
@@ -203,7 +203,7 @@ A 2-minute walkthrough of the build, the risks and how each part was engineered.
 
 Webvoltz builds the technology systems businesses compete, operate and scale on: web platforms, product engineering, automation, integrations and managed delivery teams. One accountable partner from first strategy session to ongoing delivery.
 
-**Book a strategy call** to talk through a platform with live inventory, bookings or real-time state.
+[**Book a strategy call**](https://webvoltz.com) to talk through a platform with live inventory, bookings or real-time state.
 
 ---
 

@@ -1,26 +1,25 @@
 # Walkthrough video: script
 
-Narration as read, with what the viewer sees. The machine-readable version with timing marks is [`script.vo.md`](script.vo.md).
+A short, plain-language version for leads. It answers one question: can Webvoltz build a system that stays fast and fair at scale? The technical detail lives in the written docs, not in the video.
 
-| Section | Narration | On screen |
+The version with voice and timing marks is [`script.vo.md`](script.vo.md).
+
+| Scene | Narration | On screen |
 | --- | --- | --- |
-| Hook | A ticketing map has two jobs. Show every seat. And sell each one once. Here's how we built one for a 15,000 seat venue. | Cover card |
-| Problem | Draw every seat at once, and the browser drags on every click. Let two people reach for the same seat, and someone gets let down. So we treated speed and fairness as one engineering problem. | 15,000-dot grid, two cursors |
-| Rendering | The overview isn't fifteen thousand seats. It's ten shapes. Each closed section is one path, traced around its outer rows. Open a section, and only its 1,500 seats go live. 66 nodes on the overview. A click is on screen in about two frames. And every seat is still a real checkbox, with a label a screen reader can speak. | Ring of sections, section drill-in, keyboard navigation |
-| Best seats | Need four seats together? Pick a party size and a priority. The solver walks each row once, with a sliding window. Ties break on fixed keys, so the same question always gets the same seats. | Best seats finder |
-| Contention | Now the hard part. Two tabs, same venue. Tab A takes two seats. Tab B sees them turn red, straight away. B tries one anyway, and gets a clear answer, not a surprise at checkout. If both grab a seat in the same instant, the lower session ID wins. Every tab applies the same rule, so they all agree. No server involved. | Two windows side by side |
-| Expiry | Holds expire on time. One timer covers every deadline. When nothing has expired, the map does no work at all. A test locks that in. | Time-lapse of holds releasing |
-| Backend | In production, two buyers on two machines need a referee. Redis holds the seat. Postgres owns it. A hold is one atomic script. Every seat in the block, or none. Checkout passes three checks. The same request key returns the same order. The cart must still own every seat. And the database allows one ticket per seat. A second sale can't commit. Every change carries a sequence number. Miss one, and the map resyncs. | Backend architecture, three-layer checkout |
-| Risks | We wrote down the risks, and the limits. The demo syncs tabs in one browser, not across machines. The backend design is what closes that gap. | Risk table |
-| Standards | Every commit is scanned for secrets, linted, type-checked and built before it lands. | CI pipeline |
-| Close | Webvoltz builds the technology systems businesses run on. If your platform sells seats, slots or stock in real time, book a strategy call. | End card |
+| Hook | Selling tickets online sounds simple. Until 15,000 seats go on sale at once. | "15,000 seats. On sale at once." with the live map |
+| Challenge | The map has to stay fast. And two people can't buy the same seat. | A field of seats. Two cursors reach for the same one. |
+| Speed | So we built a seat map that only loads what you're looking at. Pick a section, and its seats appear right away. | The venue as 10 sections, then one section opening |
+| Best seats | Need seats together? Choose how many, and it finds the best ones for you. | Best seats finder picking a block of 4 |
+| Two buyers | Now, two buyers at the same moment. User A picks two seats. User B sees them turn red, straight away. No double bookings. No surprises at checkout. | User A and User B side by side. B's seats turn red, and B is told the seat is taken. |
+| Fair holds | Seats are held for five minutes. If nobody pays, they go back on sale. | Time-lapse of holds releasing and the timer running out |
+| Scale | Behind it sits a server design made for busy on-sale days. It grows with your business, without slowing down. | Buyers streaming in, more servers joining, one record per seat |
+| Close | Webvoltz builds the technology systems businesses run on. Need a platform that scales? Book a strategy call. | End card with "Book a strategy call" and webvoltz.com |
 
-**Word count:** about 410. **Running time:** 2 minutes 18 seconds.
+**Word count:** about 120. **Running time:** 52 seconds.
 
 ## Voice checklist
 
-- Webvoltz is the subject doing the work: "we built", "we wrote down".
-- Business outcome first, then the system, then the tools.
-- Short sentences, active voice, no exclamation marks.
-- No hype words: no "seamless", "leverage", "cutting-edge", "best-in-class".
-- Every number on screen is measured: 15,000 seats, 1,500 live, 66 nodes, about two frames.
+- Plain words. No technical terms in the narration.
+- Business outcome first: fast, fair, built to grow.
+- Webvoltz is the subject doing the work: "we built".
+- Short sentences, active voice, no exclamation marks, no hype words.
